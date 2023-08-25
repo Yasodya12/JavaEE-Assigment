@@ -10,20 +10,9 @@ import java.io.IOException;
 import java.sql.*;
 
 
-
 @WebServlet(urlPatterns = {"/pages/customer"})
 public class CustomerServlet extends HttpServlet {
-    private JsonArrayBuilder addJSONObject(String message, String state) {
-        JsonArrayBuilder status = Json.createArrayBuilder();
 
-        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
-        objectBuilder.add("state", state);
-        objectBuilder.add("message", message);
-        objectBuilder.add("data", "[]");
-        status.add(objectBuilder.build());
-
-        return status;
-    }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -32,9 +21,14 @@ public class CustomerServlet extends HttpServlet {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "1234");
             PreparedStatement pstm = connection.prepareStatement("select * from Customer");
             ResultSet rst = pstm.executeQuery();
-            String option = req.getParameter("option");
+
 
             resp.addHeader("Content-type", "application/json");
+            resp.addHeader("Access-Control-Allow-Origin", "*");
+            resp.addHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT");
+            resp.addHeader("Access-Control-Allow-Credentials", "true");
+            resp.addHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+
             JsonArrayBuilder allCustomers = Json.createArrayBuilder();
 
             while (rst.next()) {
@@ -64,6 +58,8 @@ public class CustomerServlet extends HttpServlet {
 
         }
 
+        System.out.println("Here");
+
 
     }
 
@@ -73,14 +69,19 @@ public class CustomerServlet extends HttpServlet {
         String cusName = req.getParameter("cusName");
         String cusAddress = req.getParameter("cusAddress");
         String cusSalary = req.getParameter("cusSalary");
+
         resp.addHeader("Content-type", "application/json");
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.addHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT");
+        resp.addHeader("Access-Control-Allow-Credentials", "true");
+        resp.addHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
 
         try {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "1234");
 
-            PreparedStatement pstm = connection.prepareStatement("insert into customerinfo values(?,?,?,?)");
+            PreparedStatement pstm = connection.prepareStatement("insert into Customer values(?,?,?,?)");
             pstm.setObject(1, cusID);
             pstm.setObject(2, cusName);
             pstm.setObject(3, cusAddress);
@@ -95,21 +96,27 @@ public class CustomerServlet extends HttpServlet {
             }
 
         } catch (ClassNotFoundException e) {
-
+            //throw new RuntimeException(e);
             resp.setStatus(500);
             resp.getWriter().print(addJSONObject(e.getMessage(), "error"));
 
         } catch (SQLException e) {
-
+            //throw new RuntimeException(e);
             resp.setStatus(400);
             resp.getWriter().print(addJSONObject(e.getMessage(), "error"));
 
         }
+
+
+
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.addHeader("Content-type", "application/json");
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.addHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTION");
+
         JsonReader reader = Json.createReader(req.getReader());
         JsonObject customerOB = reader.readObject();
 
@@ -126,7 +133,7 @@ public class CustomerServlet extends HttpServlet {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "1234");
 
-            PreparedStatement pstm3 = connection.prepareStatement("update customerinfo set name=?,address=?,contact=? where cusID=?");
+            PreparedStatement pstm3 = connection.prepareStatement("update Customer set name=?,address=?,contact=? where cusID=?");
             pstm3.setObject(4, cusID);
             pstm3.setObject(1, cusName);
             pstm3.setObject(2, cusAddress);
@@ -155,10 +162,15 @@ public class CustomerServlet extends HttpServlet {
         String cusID = req.getParameter("cusID");
         System.out.println(cusID);
         resp.addHeader("Content-type", "application/json");
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.addHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT");
+        resp.addHeader("Access-Control-Allow-Credentials", "true");
+        resp.addHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "1234");
-            PreparedStatement pstm2 = connection.prepareStatement("delete from customerinfo where cusID=?");
+            PreparedStatement pstm2 = connection.prepareStatement("delete from Customer where cusID=?");
             pstm2.setObject(1, cusID);
 
             if (pstm2.executeUpdate() > 0) {
@@ -180,5 +192,24 @@ public class CustomerServlet extends HttpServlet {
     }
 
 
+    private JsonArrayBuilder addJSONObject(String message, String state) {
+        JsonArrayBuilder status = Json.createArrayBuilder();
 
+        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+        objectBuilder.add("state", state);
+        objectBuilder.add("message", message);
+        objectBuilder.add("data", "[]");
+        status.add(objectBuilder.build());
+
+        return status;
+    }
+
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.addHeader("Content-type", "application/json");
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.addHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT");
+        resp.addHeader("Access-Control-Allow-Credentials", "true");
+        resp.addHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+    }
 }

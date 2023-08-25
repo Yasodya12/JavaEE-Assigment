@@ -11,17 +11,7 @@ import java.sql.*;
 
 @WebServlet(urlPatterns = "/pages/item")
 public class ItemServlet extends HttpServlet {
-    private JsonArrayBuilder addJSONObject(String message, String state) {
-        JsonArrayBuilder status = Json.createArrayBuilder();
 
-        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
-        objectBuilder.add("state", state);
-        objectBuilder.add("message", message);
-        objectBuilder.add("data", "[]");
-        status.add(objectBuilder.build());
-
-        return status;
-    }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
@@ -149,7 +139,7 @@ public class ItemServlet extends HttpServlet {
             pstm3.setObject(2, qty);
             pstm3.setObject(3, price);
             pstm3.setObject(4, code);
-            
+
             if (pstm3.executeUpdate() > 0) {
                 resp.getWriter().print(addJSONObject("Customer Saved !", "ok"));
             }
@@ -167,5 +157,15 @@ public class ItemServlet extends HttpServlet {
 
     }
 
+    private JsonArrayBuilder addJSONObject(String message, String state) {
+        JsonArrayBuilder status = Json.createArrayBuilder();
 
+        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+        objectBuilder.add("state", state);
+        objectBuilder.add("message", message);
+        objectBuilder.add("data", "[]");
+        status.add(objectBuilder.build());
+
+        return status;
+    }
 }
