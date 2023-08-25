@@ -1,4 +1,4 @@
-package servlet;
+package lk.ijse.jsp.servlet;
 
 import javax.json.*;
 import javax.servlet.ServletException;
@@ -9,6 +9,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
 
+//http://localhost:8080/pos_one/customer
+//http://localhost:8080/pos_one/pages/customer? 404
+//http://localhost:8080/customer? 404
+
+//http://localhost:8080/pos_one/pages/customer//
+//http:://localhost:8080/pos_one/pages/customer
+//http:://localhost:8080/pos_one/pages/customer
 
 @WebServlet(urlPatterns = {"/pages/customer"})
 public class CustomerServlet extends HttpServlet {
@@ -18,10 +25,10 @@ public class CustomerServlet extends HttpServlet {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "1234");
-            PreparedStatement pstm = connection.prepareStatement("select * from Customer");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/webpos?allowPublicKeyRetrieval=true&useSSL=false", "root", "1234");
+            PreparedStatement pstm = connection.prepareStatement("select * from customerinfo");
             ResultSet rst = pstm.executeQuery();
-
+            String option = req.getParameter("option");
 
             resp.addHeader("Content-type", "application/json");
             resp.addHeader("Access-Control-Allow-Origin", "*");
@@ -58,7 +65,7 @@ public class CustomerServlet extends HttpServlet {
 
         }
 
-
+        System.out.println("Here");
 
 
     }
@@ -79,9 +86,9 @@ public class CustomerServlet extends HttpServlet {
         try {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "1234");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/webpos?allowPublicKeyRetrieval=true&useSSL=false", "root", "1234");
 
-            PreparedStatement pstm = connection.prepareStatement("insert into Customer values(?,?,?,?)");
+            PreparedStatement pstm = connection.prepareStatement("insert into customerinfo values(?,?,?,?)");
             pstm.setObject(1, cusID);
             pstm.setObject(2, cusName);
             pstm.setObject(3, cusAddress);
@@ -96,16 +103,32 @@ public class CustomerServlet extends HttpServlet {
             }
 
         } catch (ClassNotFoundException e) {
-
+            //throw new RuntimeException(e);
             resp.setStatus(500);
             resp.getWriter().print(addJSONObject(e.getMessage(), "error"));
 
         } catch (SQLException e) {
-
+            //throw new RuntimeException(e);
             resp.setStatus(400);
             resp.getWriter().print(addJSONObject(e.getMessage(), "error"));
 
         }
+
+        /*JsonReader reader = Json.createReader(req.getReader());
+        JsonArray jsonValues = reader.readArray();
+        for (JsonValue jsonValue : jsonValues) {
+            String code=" ";
+            String id = jsonValue.asJsonObject().getString("oid");
+            String name = jsonValue.asJsonObject().getString("date");
+            JsonArray orderDetails = jsonValue.asJsonObject().getJsonArray("orderDetails");
+
+            for (JsonValue ods:orderDetails){
+                code = ods.asJsonObject().getString("code");
+            }
+
+            System.out.println(id+" "+name+" "+code);
+        }*/
+
 
 
 
@@ -116,6 +139,8 @@ public class CustomerServlet extends HttpServlet {
         resp.addHeader("Content-type", "application/json");
         resp.addHeader("Access-Control-Allow-Origin", "*");
         resp.addHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTION");
+        /*resp.addHeader("Access-Control-Allow-Credentials", "true");
+        resp.addHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");*/
 
         JsonReader reader = Json.createReader(req.getReader());
         JsonObject customerOB = reader.readObject();
@@ -125,15 +150,18 @@ public class CustomerServlet extends HttpServlet {
         String cusAddress = customerOB.getString("address");
         String cusSalary = customerOB.getString("salary");
 
-
+        /*String cusID = req.getParameter("id");
+        String cusName = req.getParameter("name");
+        String cusAddress = req.getParameter("address");
+        String cusSalary = req.getParameter("salary");*/
 
         System.out.println(cusID + " - " + cusName+ " - " + cusAddress+ " - " +cusSalary);
         try {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "1234");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/webpos?allowPublicKeyRetrieval=true&useSSL=false", "root", "1234");
 
-            PreparedStatement pstm3 = connection.prepareStatement("update Customer set name=?,address=?,contact=? where cusID=?");
+            PreparedStatement pstm3 = connection.prepareStatement("update customerinfo set name=?,address=?,contact=? where cusID=?");
             pstm3.setObject(4, cusID);
             pstm3.setObject(1, cusName);
             pstm3.setObject(2, cusAddress);
@@ -169,8 +197,8 @@ public class CustomerServlet extends HttpServlet {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "1234");
-            PreparedStatement pstm2 = connection.prepareStatement("delete from Customer where cusID=?");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/webpos?allowPublicKeyRetrieval=true&useSSL=false", "root", "1234");
+            PreparedStatement pstm2 = connection.prepareStatement("delete from customerinfo where cusID=?");
             pstm2.setObject(1, cusID);
 
             if (pstm2.executeUpdate() > 0) {

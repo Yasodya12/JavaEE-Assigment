@@ -104,7 +104,7 @@
 
             },
             error:function (error) {
-                alert(error)
+                console.log(error.status);
             }
         })
     }
@@ -119,10 +119,10 @@
             data:itemForm,
             method:'POST',
             success:function (res) {
-                alert(res)
+                console.log(res)
             },
             error:function (error) {
-                alert(error)
+                console.log(error)
             }
         })
     });
@@ -132,10 +132,10 @@
             url:'item?itemID='+code,
             method:'delete',
             success:function (res) {
-                alert(res)
+                console.log(res)
             },
             error:function (error) {
-               alert(error)
+                console.log(error)
             }
         })
     });
@@ -155,10 +155,10 @@
             contentType:"application/json",
             data: JSON.stringify(itemOB),
             success:function (res) {
-               alert(res)
+                console.log(res)
             },
             error:function (error) {
-                alert(error)
+                console.log(error)
             }
         })
     });

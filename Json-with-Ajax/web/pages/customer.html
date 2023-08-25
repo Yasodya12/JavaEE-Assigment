@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!--    http:://localhost:8080/pos_one/pages/test-customer.html-->
+    <!--    http:://localhost:8080/pos_one/pages/customer-->
 
+    <!--    http:://localhost:8080/pos_one/pages/customer-->
     <meta charset="UTF-8">
     <title>Customer Manage</title>
     <meta content="width=device-width initial-scale=1" name="viewport">
@@ -99,7 +102,7 @@
 
     function loadALlCustomer() {
         $.ajax({
-            url:'http://localhost:8081/Back_End_Web_exploded/pages/customer',
+            url:'customer',
             success:function (res) {
                 //console.log(res);
                 let $tblCustomer = $('#tblCustomer');
@@ -121,7 +124,7 @@
     $('#btnCustomer').click(function (){
         let formData = $('#customerForm').serialize();
         $.ajax({
-            url:'http://localhost:8081/Back_End_Web_exploded/pages/customer',
+            url:'customer',
             method:"POST",
             data:formData,
             success:function (res) {
@@ -136,7 +139,24 @@
         });
     });
 
+    /*$('#btnUpdate').click(function (){
+        let cusID = $('#txtCustomerID').val();
+        let customerName = $('#txtCustomerName').val();
+        let customerAddress = $('#txtCustomerAddress').val();
+        let customerSalary = $('#txtCustomerSalary').val();
 
+        $.ajax({
+            url:'customer?id='+cusID+'&name='+encodeURIComponent(customerName)+'&address='+encodeURIComponent(customerAddress)+'&salary='+encodeURIComponent(customerSalary),
+            method: "put",
+            success:function (res) {
+                console.log(res);
+                loadALlCustomer();
+            },
+            error:function (error) {
+                console.log(error.status);
+            }
+        });
+    });*/
 
     $('#btnUpdate').click(function (){
 
@@ -148,7 +168,7 @@
         let cusOb={id:cusID,name:customerName,address:customerAddress,salary:customerSalary}
         JSON.stringify(cusOb);
         $.ajax({
-            url:'http://localhost:8081/Back_End_Web_exploded/pages/customer',
+            url:'customer',
             method:'put',
             contentType:"application/json",
             data:JSON.stringify(cusOb),
@@ -166,7 +186,7 @@
     $('#btnCusDelete').click(function (){
         let cusID = $('#txtCustomerID').val();
         $.ajax({
-            url:'http://localhost:8081/Back_End_Web_exploded/pages/customer?cusID='+cusID,
+            url:'customer?cusID='+cusID,
             method: "delete",
             success:function (res) {
                 console.log(res);
