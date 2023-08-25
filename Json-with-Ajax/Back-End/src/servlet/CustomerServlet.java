@@ -58,7 +58,7 @@ public class CustomerServlet extends HttpServlet {
 
         }
 
-        System.out.println("Here");
+
 
 
     }
@@ -96,12 +96,12 @@ public class CustomerServlet extends HttpServlet {
             }
 
         } catch (ClassNotFoundException e) {
-            //throw new RuntimeException(e);
+
             resp.setStatus(500);
             resp.getWriter().print(addJSONObject(e.getMessage(), "error"));
 
         } catch (SQLException e) {
-            //throw new RuntimeException(e);
+
             resp.setStatus(400);
             resp.getWriter().print(addJSONObject(e.getMessage(), "error"));
 

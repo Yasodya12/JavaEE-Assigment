@@ -99,7 +99,7 @@
 
     function loadALlCustomer() {
         $.ajax({
-            url:'customer',
+            url:'http://localhost:8081/Back_End_Web_exploded/pages/customer',
             success:function (res) {
                 //console.log(res);
                 let $tblCustomer = $('#tblCustomer');
@@ -121,7 +121,7 @@
     $('#btnCustomer').click(function (){
         let formData = $('#customerForm').serialize();
         $.ajax({
-            url:'customer',
+            url:'http://localhost:8081/Back_End_Web_exploded/pages/customer',
             method:"POST",
             data:formData,
             success:function (res) {
@@ -148,7 +148,7 @@
         let cusOb={id:cusID,name:customerName,address:customerAddress,salary:customerSalary}
         JSON.stringify(cusOb);
         $.ajax({
-            url:'customer',
+            url:'http://localhost:8081/Back_End_Web_exploded/pages/customer',
             method:'put',
             contentType:"application/json",
             data:JSON.stringify(cusOb),
@@ -166,7 +166,7 @@
     $('#btnCusDelete').click(function (){
         let cusID = $('#txtCustomerID').val();
         $.ajax({
-            url:'customer?cusID='+cusID,
+            url:'http://localhost:8081/Back_End_Web_exploded/pages/customer?cusID='+cusID,
             method: "delete",
             success:function (res) {
                 console.log(res);
